@@ -1,0 +1,73 @@
+# Root-level .gitignore
+
+# ========================
+# Virtual Environment
+# ========================
+/.venv/
+
+# ========================
+# Backend (Django) 
+# ========================
+# Django environment variables and sensitive files
+/InterviewEaseBackend/.env
+/InterviewEaseBackend/*.env
+
+# Database files (if using SQLite)
+/InterviewEaseBackend/db.sqlite3
+/InterviewEaseBackend/db.sqlite3-shm
+/InterviewEaseBackend/db.sqlite3-wal
+
+# Django migrations
+/InterviewEaseBackend/**/migrations/
+
+# Static and media files
+/InterviewEaseBackend/staticfiles/
+/InterviewEaseBackend/media/
+
+# Django cache files
+/InterviewEaseBackend/*.log
+/InterviewEaseBackend/*.pot
+/InterviewEaseBackend/*.pyc
+/InterviewEaseBackend/__pycache__/
+*.py[cod]
+
+# ========================
+# Frontend (React) 
+# ========================
+# Node modules
+/InterviewEase/node_modules/
+
+# Frontend environment variables
+/InterviewEase/.env
+/InterviewEase/*.env
+
+# Build output
+/InterviewEase/build/
+/InterviewEase/dist/
+
+# ========================
+# Common Exclusions
+# ========================
+# Logs and databases (both frontend and backend)
+*.log
+*.sqlite3
+
+# Byte-compiled Python files (for backend)
+/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ========================
+# IDE and Editor Settings
+# ========================
+# PyCharm project files
+.idea/
+# VSCode project settings
+.vscode/
+
+# ========================
+# Exclude build files (Optional)
+# ========================
+build/
+dist/
