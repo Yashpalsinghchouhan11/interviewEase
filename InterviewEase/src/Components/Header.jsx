@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { isLoggedIn, logOut } from "../Features/userSlice";
+import { isAuthenticated, logOut } from "../Features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Header() {
   const [toggle, setToggle] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const LoggedIn = useSelector(isLoggedIn)
+  const LoggedIn = useSelector(isAuthenticated)
   const location = useLocation();
   const iconColor = location.pathname === "/";
 

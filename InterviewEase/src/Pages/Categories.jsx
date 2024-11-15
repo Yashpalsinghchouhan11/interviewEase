@@ -1,17 +1,19 @@
-    import React from "react";
-    import { Link } from "react-router-dom";
-    import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-    import {useDispatch} from 'react-redux'
-    import { useState } from "react";
-    import { useSearchParams } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import {useDispatch} from 'react-redux'
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import {setDomain } from "../Features/questionSlice";
 
     export default function Category(){
-        const categories = [['PY','Python Developer'], ['DS','Data Science'], ['DA','Data Analytics'], ['JS','JavaScript Developer'], ['HR','Human Resource']]
+        const categories = [['SD','Software Development'], ['DS','Data Science & Analytics'], ['PM','Product Management'], ['CD','Cloud & DevOps'], ['HR','Human Resource']]
         const dispatch = useDispatch()
         const [searchParams, setSearchParams] = useSearchParams();
         const handleOnClick = (e) =>{
             const event = e.currentTarget.getAttribute('data')
             setSearchParams({domain:event})
+            dispatch(setDomain(event))
         }
         
         return(

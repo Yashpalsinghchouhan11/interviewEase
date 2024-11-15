@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { SetErrors, Newerrors, signupAsync, isLoggedIn } from "../Features/userSlice";
-
+import { signupAsync, isAuthenticated } from "../Features/userSlice";
+import {SetErrors, Newerrors} from "../Features/errorSlice"
 export default function Signup() {
   const [formdata, setFormdata] = useState({
     username: "",
@@ -12,7 +12,7 @@ export default function Signup() {
   // const [errors, setError] = useState({})
   const navigate = useNavigate();
   const errors = useSelector(Newerrors);
-  const loggedIn = useSelector(isLoggedIn);
+  const LoggedIn = useSelector(isAuthenticated);
   const dispatch = useDispatch();
   const handleOnchange = (e) => {
     const { name, value } = e.target;
@@ -40,23 +40,30 @@ export default function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(SetErrors({})); // Clear previous errors
     const error = validate();
     if (Object.keys(error).length > 0) {
       dispatch(SetErrors(error));
-    }
-    try {
+    } else {
       dispatch(signupAsync(formdata));
-      if (loggedIn){
-        setFormdata({
-          username: "",
-          email: "",
-          password: "",
-        });
-        dispatch(SetErrors());
-        navigate("/");
-      }
-    } catch (error) {}
+    }
   };
+  
+
+  const loading = useSelector(state => state.user.loading); // Example loading selector
+
+  useEffect(() => {
+    if (LoggedIn && !loading) {
+      setFormdata({
+        username: "",
+        email: "",
+        password: ""
+      });
+      dispatch(SetErrors({}));
+      navigate('/');
+    }
+  }, [LoggedIn, loading, dispatch, navigate]);
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg ">
@@ -77,7 +84,7 @@ export default function Signup() {
             value={formdata.username}
             onChange={handleOnchange}
           />
-          {errors.username && (
+          {errors?.username && (
             <p className="text-rose-600">{errors.username}</p>
           )}
           <label htmlFor="Email" className="my-4">
@@ -92,7 +99,7 @@ export default function Signup() {
             value={formdata.email}
             onChange={handleOnchange}
           />
-          {errors.email && <p className="text-rose-600">{errors.email}</p>}
+          {errors?.email && <p className="text-rose-600">{errors.email}</p>}
           <label htmlFor="Password" className="my-4">
             Password
           </label>
@@ -105,7 +112,7 @@ export default function Signup() {
             value={formdata.password}
             onChange={handleOnchange}
           />
-          {errors.password && (
+          {errors?.password && (
             <p className="text-rose-600">{errors.password}</p>
           )}
           <button

@@ -1,19 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import image from "../assets/gettingstart.jpeg";
-import InfoIcon from '@mui/icons-material/Info';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { useSearchParams } from "react-router-dom";
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import { asyncQuestions } from "../Features/questionSlice";
+import { isAuthenticated } from "../Features/userSlice";
 
 export default function StartInterview() {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const domain = searchParams.get('domain');
+  const [question_no, setQuestions_no] = React.useState(1);
+  const navigate = useNavigate();
   
   const getQuestions = () =>{
     dispatch(asyncQuestions(domain));
   }
+  
+  
+  const isLogging = useSelector(isAuthenticated)
+  useEffect(()=>{
+    if (!isLogging){
+      navigate('/login')
+    }
+  },[isAuthenticated])
 
   return (
     <div className="h-screen bg-white flex justify-center items-center ">
@@ -28,7 +38,7 @@ export default function StartInterview() {
           When you are done, review your answers
         </p>
 
-        <Link to={`/category/domain/start?domain=${domain}`} onClick={getQuestions} className="bg-rose-500 py-2 px-4 m-2 text-center rounded-md text-slate-200 w-3/4 hover:shadow-lg">
+        <Link to={`/category/domain/start?question=${question_no}`} onClick={getQuestions} className="bg-rose-500 py-2 px-4 m-2 text-center rounded-md text-slate-200 w-3/4 hover:shadow-lg">
           Start
         </Link>
         <Link to="/category/domain/custom-question" className="bg-rose-500 py-2 px-4 m-2 text-center rounded-md text-slate-200 w-3/4 hover:shadow-lg">

@@ -1,57 +1,17 @@
-// import { CustomQuestion } from "../Components/customQuestion";
-// import { useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { disable, setDisable } from "../Features/questionSlice";
 
-// export function CustomizeQuestionList() {
-
-//     const removeQuestion = (id) => {
-//         setQuestionInput(prev => prev.filter(question => question.id !== id));
-//     };
-//     const Disable = useSelector(disable)
-//     const dispatch = useDispatch()
-//     const [questionInput, setQuestionInput] = useState([{ id: 0, component: <CustomQuestion key={0} id={0} removeQuestion={removeQuestion} /> }]);
-
-//     const addMoreQuestion = () => {
-//         if (Disable < 5) {
-//             const newQuestion = {
-//                 id: Disable,
-//                 component: <CustomQuestion key={Disable} id={Disable} removeQuestion={removeQuestion} />
-//             };
-//             setQuestionInput(prev => [...prev, newQuestion]);
-//             dispatch(setDisable(Disable + 1))
-//         }
-//     };
-//     console.log(Disable);
-
-//   return (
-//     <div className="flex flex-col items-center justify-center mt-16">
-//       <h1 className="text-2xl font-bold">Custom Questions</h1>
-//       {questionInput.map(q => q.component)}
-//       <button
-//         disabled={Disable >= 5}
-//         onClick={addMoreQuestion}
-//         className="text-sm shadow-xl px-4 py-2 mt-4 bg-slate-300 rounded-md disabled:text-slate-200 disabled:cursor-not-allowed"
-//       >
-//         Add more questions
-//       </button>
-//     </div>
-//   );
-// }
 
 import { useState } from "react";
-import { setQuestion } from "../Features/questionSlice";
-import { useDispatch } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import {asyncSetQuestions, domain} from "../Features/questionSlice"
 
 export function CustomizeQuestionList() {
   const [disable, setDisable] = useState(1);
   const [component, setComponent] = useState([0]);
   const [questions, setQuestions] = useState([""]);
+  const [question_no, setQuestions_no] = useState(1);
   const dispatch = useDispatch();
-
-  const [searchParams] = useSearchParams();
-  const domain = searchParams.get("domain");
+  const Domain = useSelector(domain)
 
   const addMoreQuestion = () => {
     setDisable((prev) => prev + 1);
@@ -75,8 +35,13 @@ export function CustomizeQuestionList() {
   };
 
   const submit = () => {
-    dispatch(setQuestion(questions));
-    console.log(questions.length);
+    const transformedQuestions = questions.map(question => ({ question_text: question }));
+    const formData = {
+      "domain": Domain,
+      "questions": transformedQuestions
+    }
+
+    dispatch(asyncSetQuestions(formData));
   };
 
   return (
@@ -109,7 +74,7 @@ export function CustomizeQuestionList() {
         Add more question field
       </button>
       <Link
-        to={`/category/domain/start?domain=${domain}`}
+        to={`/category/domain/start?question=${question_no}`}
         hidden={questions[0] == "" ? true : false}
         className="text-sm shadow-xl px-4 py-2 mt-4 bg-slate-300 rounded-md disabled:text-slate-200 disabled:cursor-not-allowed"
         onClick={submit}

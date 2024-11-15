@@ -12,7 +12,7 @@ export default {
       colors:{
         'black':'#141414',
         'neon': '#D7FF35',
-  
+        
       },
       fontFamily:{
   

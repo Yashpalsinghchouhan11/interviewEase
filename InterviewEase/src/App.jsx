@@ -11,11 +11,14 @@ import { useSelector } from "react-redux";
 import Questions from "./Pages/Questions.jsx";
 import { ReviewAnswer } from "./Pages/Review.jsx";
 import { CustomizeQuestionList } from "./Pages/customizeques.jsx";
+import AuthWatcher from "./Components/authWatcher.jsx";
+import AudioRecorder from "./Pages/abc.jsx";
 
 function App() {
 
   return (
     <BrowserRouter>
+    <AuthWatcher />
       <Routes>
         <Route
           path=""
@@ -53,6 +56,12 @@ function App() {
         path="/category/domain/start/reviewanswer"
         element={<Layout>
           <ReviewAnswer/>
+        </Layout>}
+        />
+        <Route
+        path="/category/domain/start/reviewanswer/test"
+        element={<Layout>
+          <AudioRecorder/>
         </Layout>}
         />
         <Route

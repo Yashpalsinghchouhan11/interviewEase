@@ -1,8 +1,9 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { isLoggedIn, Newerrors, SetErrors } from "../Features/userSlice";
+import { isAuthenticated } from "../Features/userSlice";
+import {SetErrors, Newerrors} from "../Features/errorSlice"
 import { loginAsync } from "../Features/userSlice";
 
 export default function Login() {
@@ -13,7 +14,7 @@ export default function Login() {
   // const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const errors = useSelector(Newerrors)
-  const LoggedIn = useSelector(isLoggedIn)
+  const LoggedIn = useSelector(isAuthenticated)
   const dispatch = useDispatch()
 
   const handleOnchange = (e) =>{
@@ -36,24 +37,27 @@ export default function Login() {
     return newErros;
   }
 
-  const handleSubmit = (e) =>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const ValidFormdata = validate();
-    if (Object.keys(ValidFormdata).length > 0){
-      dispatch(SetErrors(ValidFormdata))
-    }else{
-      dispatch(loginAsync(formdata))
-      console.log(LoggedIn)
-      if (LoggedIn){
-        setFormdata({
-          email:'',
-          password:''
-        })
-        dispatch(SetErrors())
-        navigate('/')
-      }
+    const validFormdata = validate();
+    if (Object.keys(validFormdata).length > 0) {
+      dispatch(SetErrors(validFormdata));
+    } else {
+      dispatch(loginAsync(formdata));
     }
-  }
+  };
+
+  useEffect(() => {
+    if (LoggedIn) {
+      setFormdata({
+        email: '',
+        password: ''
+      });
+      dispatch(SetErrors({}));
+      navigate('/');
+    }
+  }, [LoggedIn, dispatch, navigate]);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center">
       <div className=" max-w-md w-full p-8 bg-white rounded-lg shadow-lg">

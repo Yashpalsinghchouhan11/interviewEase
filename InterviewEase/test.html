@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script> <!-- Load jwt-decode -->
+</head>
+<body>
+    <script>
+//         let mediaRecorder;
+//         let audioChunks = [];
+
+// navigator.mediaDevices.getUserMedia({ audio: true })
+//   .then(function(stream) {
+//     mediaRecorder = new MediaRecorder(stream);
+
+//     mediaRecorder.ondataavailable = function(event) {
+//       audioChunks.push(event.data);
+//     };
+
+//     mediaRecorder.onstop = function() {
+//       const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+//       const audioUrl = URL.createObjectURL(audioBlob);
+//       const audio = new Audio(audioUrl);
+//       audio.play();  // Plays the recorded audio
+//     };
+
+//     // Start recording
+//     mediaRecorder.start();
+
+//     // Stop recording after 5 seconds (example)
+//     setTimeout(() => {
+//       mediaRecorder.stop();
+//     }, 5000);
+//   })
+//   .catch(function(err) {
+//     console.error('Error accessing microphone: ', err);
+const audio = new Audio("http://localhost:5173/10f4ea3f-ae39-427b-a4ee-f13fe766a37f")
+audio.play()
+//   });
+    </script>
+</body>
+</html>
