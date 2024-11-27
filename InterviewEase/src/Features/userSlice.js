@@ -48,7 +48,7 @@ export const signupAsync = createAsyncThunk(
           showToast({ message: "SignUp successful!", status: "success" })
         );
         Cookies.set("access_token", response.data.access_token, {
-          expires: 1 / 24,
+          expires: 1,
           sameSite: "Lax",
         });
         thunkAPI.dispatch(logIn({}));
@@ -89,7 +89,7 @@ export const loginAsync = createAsyncThunk(
           showToast({ message: "Login successful!", status: "success" })
         );
         Cookies.set("access_token", response.data.access_token, {
-          expires: 1 / 24,
+          expires: 1,
           sameSite: "Lax",
         });
         thunkAPI.dispatch(logIn({}));

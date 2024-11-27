@@ -45,8 +45,8 @@ class Questions(models.Model):
 class Answers(models.Model):
     interview = models.ForeignKey(Interview, on_delete=models.CASCADE)
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
-    answer_text = models.TextField(null=True, blank=True)  # Use TextField for longer answers
-    audio_path = models.FileField(upload_to='answers/audio/', null=True, blank=True)  # For storing audio file
+    answer_text = models.TextField(null=True, blank=True) 
+    audio_path = models.FileField(upload_to='answers/audio/', null=True, blank=True)
 
     class Meta:
         db_table = 'Answers'

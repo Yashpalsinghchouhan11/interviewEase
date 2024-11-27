@@ -3,18 +3,29 @@ import image from "../assets/gettingstart.jpeg";
 import {Link, useNavigate} from 'react-router-dom'
 import { useSearchParams } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux"
-import { asyncQuestions } from "../Features/questionSlice";
+import { asyncSetQuestions, interviewId } from "../Features/questionSlice";
 import { isAuthenticated } from "../Features/userSlice";
+import { index } from "../Features/getQuestions";
 
 export default function StartInterview() {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const domain = searchParams.get('domain');
-  const [question_no, setQuestions_no] = React.useState(1);
+  // const [question_no, setQuestions_no] = React.useState(0);
   const navigate = useNavigate();
-  
+
+  const interviewID = useSelector(interviewId)
+  const questionIndex = useSelector(index)
   const getQuestions = () =>{
-    dispatch(asyncQuestions(domain));
+    // dispatch(asyncQuestions(domain));
+    // dispatch(asyncGetQuestions(interviewID, questionIndex))
+    // dispatch(setInterviewId(domain))
+    const formData = {
+      "domain": domain,
+      "interview_type": "direct_interview"
+    }
+
+    dispatch(asyncSetQuestions(formData));
   }
   
   
@@ -38,7 +49,7 @@ export default function StartInterview() {
           When you are done, review your answers
         </p>
 
-        <Link to={`/category/domain/start?question=${question_no}`} onClick={getQuestions} className="bg-rose-500 py-2 px-4 m-2 text-center rounded-md text-slate-200 w-3/4 hover:shadow-lg">
+        <Link to={`/category/domain/start?questionIndex=${0}`} onClick={getQuestions} className="bg-rose-500 py-2 px-4 m-2 text-center rounded-md text-slate-200 w-3/4 hover:shadow-lg">
           Start
         </Link>
         <Link to="/category/domain/custom-question" className="bg-rose-500 py-2 px-4 m-2 text-center rounded-md text-slate-200 w-3/4 hover:shadow-lg">

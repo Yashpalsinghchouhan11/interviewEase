@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Interview, Questions, Domain
+from .models import Interview, Questions, Domain, Answers
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,4 +26,19 @@ class InterviewSerializer(serializers.ModelSerializer):
             Questions.objects.create(interview=interview, **question_data)
         
         return interview
+
+class AnswerSerializer(serializers.ModelSerializer):
+    question = serializers.PrimaryKeyRelatedField(queryset=Questions.objects.all())
+    interview = serializers.PrimaryKeyRelatedField(
+        queryset=Interview.objects.all(), required=False, allow_null=True
+    )
+    answer_text = serializers.CharField(required=False, allow_blank=True)
+    audio_path = serializers.FileField(required=False)
+
+    class Meta:
+        model = Answers
+        fields = ['question', 'interview', 'answer_text', 'audio_path']
+
+    def create(self, validated_data):
+        return Answers.objects.create(**validated_data)
 

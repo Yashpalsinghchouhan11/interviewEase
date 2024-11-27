@@ -4,7 +4,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {useDispatch} from 'react-redux'
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import {setDomain } from "../Features/questionSlice";
+import {setDomain, setInterviewId } from "../Features/questionSlice";
 
     export default function Category(){
         const categories = [['SD','Software Development'], ['DS','Data Science & Analytics'], ['PM','Product Management'], ['CD','Cloud & DevOps'], ['HR','Human Resource']]

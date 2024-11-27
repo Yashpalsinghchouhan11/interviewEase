@@ -9,6 +9,7 @@ import toastSlice from "../Features/toastSlice";
 import questionSlice from "../Features/questionSlice";
 import errorSlice from "../Features/errorSlice"
 import answerSlice from "../Features/answersSlice"
+import getQuestionsSlice from "../Features/getQuestions"
 
 
 // Individual persist configurations for each slice
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
     question: persistedQuestionReducer,
     error:errorSlice,
     answer: answerSlice,
+    getQuestions:getQuestionsSlice,
 });
 
 
@@ -56,7 +58,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['toast','error'], // Do not persist the entire toast slice
+  blacklist: ['toast','error','getQuestions'], // Do not persist the entire toast slice
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

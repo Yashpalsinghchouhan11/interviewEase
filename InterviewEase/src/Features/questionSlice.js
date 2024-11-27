@@ -37,27 +37,22 @@ export const asyncQuestions = createAsyncThunk('getQuestion', async (domain,thun
     }
 })
 
-export const setQuestions = (formData) =>{
-    return new Promise((resolve, reject)=>{
-        const token = Cookies.get("access_token");
-        axios.post(`http://127.0.0.1:8000/login/interview/create/`,formData,{
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-        })
-        .then((response)=>{
-            resolve(response)
-        })
-        .catch((error)=>{
-            reject(error)
-        })
-    })
-}
+export const setQuestions = (formData) => {
+    const token = Cookies.get("access_token");
+    // console.log(formData)
+    return axios.post(`http://127.0.0.1:8000/login/interview/create/`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Ensure formData is JSON
+      },
+    });
+  };
+  
 
 export const asyncSetQuestions = createAsyncThunk('setQuestion', async (formData,thunkAPI)=>{
 
     try {
+        console.log("FormData received in asyncSetQuestions:", formData);
         const response = await setQuestions(formData);
        
         if (response.data.status == 'success'){
@@ -76,36 +71,44 @@ export const asyncSetQuestions = createAsyncThunk('setQuestion', async (formData
 })
 
 
-export const getQuestions = (interview_id) =>{
-    const token = Cookies.get("access_token");
-    return new Promise((resolve, reject)=>{
-        axios.get(`http://127.0.0.1:8000/login/getquestions/${interview_id}`,{
-            headers:{
-                "Authorization": `Bearer ${token}`,
-                "Content-type": "Application/json"
-            }
-        })
-        .then((response)=>(
-            resolve(response)
-        ))
-        .then((error)=>(
-            reject(error)
-        ))
-    })
-}
+// export const getQuestions = (interview_id) =>{
+//     const token = Cookies.get("access_token");
+//     return new Promise((resolve, reject)=>{
+//         axios.get(`http://127.0.0.1:8000/login/getquestions/${interview_id}`,{
+//             headers:{
+//                 "Authorization": `Bearer ${token}`,
+//                 "Content-type": "Application/json"
+//             }
+//         })
+//         .then((response)=>(
+//             resolve(response)
+//         ))
+//         .then((error)=>(
+//             reject(error)
+//         ))
+//     })
+// }
 
-export const asyncGetQuestions = createAsyncThunk('getQuestions', async (thunkAPI, interviewId)=>{
+// export const asyncGetQuestions = createAsyncThunk(
+//     'getQuestions',
+//     async (interviewId, thunkAPI) => {
+//         try {
+//             // console.log(typeof interviewId);
+//             // console.log(interviewId);
 
-    try {
-        const response = getQuestions(interviewId)
-        if (response.status == 200){
-            console.log(response)
-        }
-        
-    } catch (error) {
-        console.log(error)
-    }
-})
+//             // Await the API response
+//             const response = await getQuestions(interviewId);
+
+//             if (response.status === 200) {
+//                 console.log(response);
+//                 // return response.data;
+//             } 
+//         } catch (error) {
+//             console.error("Error fetching questions:", error);
+            
+//         }
+//     }
+// );
 
 
 

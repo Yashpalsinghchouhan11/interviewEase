@@ -1,20 +1,29 @@
-import { useSelector } from "react-redux";
-import { Answers } from "../Features/questionSlice";
-import { fileUrls } from "../Features/userSlice";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { asyncGetAnswer, answers } from "../Features/answersSlice";
+import { interviewId } from "../Features/questionSlice";
 import { isAuthenticated } from "../Features/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export function ReviewAnswer() {
-  const answers = useSelector(Answers);
-  const fileurl = useSelector(fileUrls)
-  const isLogging = useSelector(isAuthenticated)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  
-  useEffect(()=>{
-    if (!isLogging){
-      navigate('/login')
+  const isLogging = useSelector(isAuthenticated);
+  const interview_id = useSelector(interviewId);
+  const answer = useSelector(answers);
+
+  useEffect(() => {
+    if (!isLogging) {
+      navigate("/login");
     }
-  },[isAuthenticated])
+  }, [isLogging, navigate]);
 
+  useEffect(() => {
+    if (interview_id) {
+      dispatch(asyncGetAnswer(interview_id));
+    }
+  }, [dispatch, interview_id]);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-slate-100 to-slate-200 p-6 mt-16">
@@ -31,9 +40,9 @@ export function ReviewAnswer() {
         </p>
 
         <div className="flex flex-col space-y-6">
-          {answers.map((answer, index) => (
+          {answer.map((answer, index) => (
             <div
-              key={index}
+              key={answer.id}
               className="p-6 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-lg transition duration-300"
             >
               <h3 className="text-xl font-semibold text-gray-800 mb-4">
@@ -41,9 +50,10 @@ export function ReviewAnswer() {
                 <span className="font-normal">{answer.question}</span>
               </h3>
               <p className="text-lg text-gray-700">
-                <span className="font-bold">Your Answer:</span> {answer.answer}
+                <span className="font-bold">Your Answer:</span>{" "}
+                {answer.answer_text}
               </p>
-              <audio className="w-full mt-2" controls src={fileurl} />
+              <audio className="w-full mt-2" controls src={answer.audio_path} />
             </div>
           ))}
         </div>

@@ -1,139 +1,63 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { asyncGetAnswer } from "../Features/answersSlice";
+import { interviewId } from "../Features/questionSlice";
+// import { AudioUrl, TextAnswer, questionText } from "../Features/answersSlice";
 
 function AudioRecorder() {
-  const [audioUrls, setAudioUrls] = useState(Array(5).fill(null)); // Array for 5 recordings
-  const [currentAnswer, setCurrentAnswer] = useState(0); // Current recording index (0-4)
-  const [isRecording, setIsRecording] = useState(false);
-  const mediaRecorderRef = useRef(null);
+  const dispatch = useDispatch();
 
+  // // Select interview ID and Redux state data
+  const interview_id = useSelector(interviewId);
+  // const audioUrl = useSelector(AudioUrl);
+  // const textAnswer = useSelector(TextAnswer);
+  // const question = useSelector(questionText);
+
+  // // Fetch data when the component is mounted
   useEffect(() => {
-    // Load recordings from localStorage on component mount
-    const savedRecordings = Array.from({ length: 5 }, (_, i) =>
-      localStorage.getItem(`recording-${i + 1}`)
-    );
-    setAudioUrls(savedRecordings);
-  }, []);
+    if (interview_id) {
+      dispatch(asyncGetAnswer(interview_id));
+    }
+  }, [dispatch, interview_id]);
+  return ;
+  // return (
+  //   <div className="max-w-lg mx-auto mt-10 p-6 bg-gray-100 rounded-lg shadow-lg">
+  //     <h2 className="text-2xl font-semibold mb-4">Interview Answer</h2>
 
-  const startRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorderRef.current = new MediaRecorder(stream);
-    const audioChunks = [];
+  //     {/* Display Question */}
+  //     <div className="mb-4">
+  //       <h3 className="text-lg font-semibold text-gray-700">Question:</h3>
+  //       <p className="text-gray-600">{question || "Fetching question..."}</p>
+  //     </div>
 
-    mediaRecorderRef.current.ondataavailable = (event) => {
-      audioChunks.push(event.data);
-    };
+  //     {/* Display Text Answer */}
+  //     <div className="mb-4">
+  //       <h3 className="text-lg font-semibold text-gray-700">Text Answer:</h3>
+  //       <p className="text-gray-600">{textAnswer || "Fetching text answer..."}</p>
+  //     </div>
 
-    mediaRecorderRef.current.onstop = () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-      const newAudioUrl = URL.createObjectURL(audioBlob);
+  //     {/* Audio Player */}
+  //     <div>
+  //       <h3 className="text-lg font-semibold text-gray-700">Audio Answer:</h3>
+  //       {audioUrl ? (
+  //         <audio controls className="w-full mt-2">
+  //           <source src={audioUrl} type="audio/mp3" />
+  //           Your browser does not support the audio element.
+  //         </audio>
+  //       ) : (
+  //         <p className="text-gray-600">Fetching audio...</p>
+  //       )}
+  //     </div>
 
-      const updatedAudioUrls = [...audioUrls];
-      updatedAudioUrls[currentAnswer] = newAudioUrl;
-      setAudioUrls(updatedAudioUrls);
-    };
-
-    mediaRecorderRef.current.start();
-    setIsRecording(true);
-  };
-
-  const stopRecording = () => {
-    mediaRecorderRef.current.stop();
-    setIsRecording(false);
-  };
-
-  const redoRecording = () => {
-    const updatedAudioUrls = [...audioUrls];
-    updatedAudioUrls[currentAnswer] = null;
-    setAudioUrls(updatedAudioUrls);
-    localStorage.removeItem(`recording-${currentAnswer + 1}`);
-  };
-
-  const saveRecording = () => {
-    const audioBlob = new Blob([audioUrls[currentAnswer]], { type: 'audio/webm' });
-    const audioFile = new File([audioBlob], `recording-${currentAnswer + 1}.webm`, { type: 'audio/webm' });
-
-    // Save audio in localStorage
-    localStorage.setItem(`recording-${currentAnswer + 1}`, audioUrls[currentAnswer]);
-    console.log(`Saved audio file for answer ${currentAnswer + 1}:`, audioFile);
-
-    if (currentAnswer < 4) setCurrentAnswer(currentAnswer + 1); // Move to next answer if < 5
-  };
-
-  const handleNextAnswer = () => {
-    if (currentAnswer < 4) setCurrentAnswer(currentAnswer + 1);
-  };
-
-  return (
-    <div className="max-w-sm mx-auto mt-10 p-6 bg-gray-100 rounded-lg shadow-lg text-center">
-      <h1 className="text-2xl font-semibold mb-4">Audio Recorder - Answer {currentAnswer + 1}/5</h1>
-
-      {audioUrls[currentAnswer] && (
-        <audio className="w-full mt-4" controls src={audioUrls[currentAnswer]} />
-      )}
-
-      <div className="flex justify-center space-x-4 mt-6">
-        <button
-          onClick={startRecording}
-          disabled={isRecording}
-          className={`px-4 py-2 text-white rounded ${
-            isRecording ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
-          }`}
-        >
-          Answer
-        </button>
-        
-        <button
-          onClick={stopRecording}
-          disabled={!isRecording}
-          className={`px-4 py-2 text-white rounded ${
-            isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Stop
-        </button>
-
-        <button
-          onClick={redoRecording}
-          disabled={!audioUrls[currentAnswer]}
-          className={`px-4 py-2 text-white rounded ${
-            audioUrls[currentAnswer] ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Redo
-        </button>
-
-        <button
-          onClick={saveRecording}
-          disabled={!audioUrls[currentAnswer]}
-          className={`px-4 py-2 text-white rounded ${
-            audioUrls[currentAnswer] ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Save
-        </button>
-
-        <button
-          onClick={handleNextAnswer}
-          disabled={currentAnswer >= 4}
-          className="px-4 py-2 text-white bg-blue-700 hover:bg-blue-800 rounded"
-        >
-          Next
-        </button>
-      </div>
-
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">All Saved Recordings</h2>
-        {audioUrls.map((url, index) => (
-          url && (
-            <div key={index} className="mb-2">
-              <span>Answer {index + 1}:</span>
-              <audio className="w-full mt-2" controls src={url} />
-            </div>
-          )
-        ))}
-      </div>
-    </div>
-  );
+  //     {/* Retry Button */}
+  //     <button
+  //       onClick={() => dispatch(asyncGetAnswer(interview_id))}
+  //       className="mt-6 px-4 py-2 text-white bg-blue-700 hover:bg-blue-800 rounded"
+  //     >
+  //       Refresh Answer
+  //     </button>
+  //   </div>
+  // );
 }
 
 export default AudioRecorder;
